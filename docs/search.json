@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "9041 Assignment 2",
+    "section": "Methods",
+    "text": "Methods\n\nParticipants\nThe sample consisted of 63 participants.\n\n\n\n\n\n\n\n\nDemographic Summary\n\n\ngender\n18-24\n24-34\n35-44\n45-54\n55-64\n\n\n\n\nFemale\n35\n9\n3\n1\n2\n\n\nMale\n9\n3\n0\n0\n1\n\n\n\n\n\n\n\n\n\nMeasures\nThe Social Interaction Anxiety Scale (SIAS) was used to measure social interaction anxiety. The scale demonstrated good internal consistency in the present sample, with a Cronbach’s alpha of 0.9.\nThe Experiences in Close Relationships Anxiety Subscale was used to measure attachment-related anxiety. Its Cronbach’s alpha was 0.94.\nThe Rosenberg Self-Esteem Scale was used to measure self-esteem. Its Cronbach’s alpha was 0.85.\n\n\nData Analysis Strategy\nThe questionnaire items were scored using the scoreItems() function. Reverse keying was applied to the specified items before calculating the scale scores. For the Social Interaction Anxiety Scale, items 5, 9, and 11 were reverse-keyed. For the Rosenberg Self-Esteem Scale, items 2, 5, 6, 8, and 9 were reverse-keyed. No items were reverse-keyed for the Attachment Anxiety scale. Average scores were then calculated for each scale."
+  },
+  {
+    "objectID": "index.html#results",
+    "href": "index.html#results",
+    "title": "9041 Assignment 2",
+    "section": "Results",
+    "text": "Results\nThe overall scale scores are presented in the table below.\n\n\n\n\n\n\n\n\nScale Summary Statistics\n\n\nScales\nmean\nmedian\nsd\nrange\nAlpha\n\n\n\n\nSocial Anxiety\n2.39\n2.30\n0.70\n3.00\n0.90\n\n\nAttachment Anxiety\n3.40\n3.11\n1.62\n5.89\n0.94\n\n\nSelf-Esteem\n2.23\n2.20\n0.51\n2.20\n0.85\n\n\n\n\n\n\n\nThe mean score for Social Anxiety was 2.39, the mean score for Attachment Anxiety was 3.4, and the mean score for Self-Esteem was 2.23.\nThe table below presents the scale scores for female participants.\n\n\n\n\n\n\n\n\nScale Summary Statistics – Female Participants\n\n\nScales\nmean\nmedian\nsd\nrange\nAlpha\n\n\n\n\nSocial Anxiety\n2.44\n2.38\n0.72\n3.00\n0.90\n\n\nAttachment Anxiety\n3.43\n3.11\n1.71\n5.89\n0.94\n\n\nSelf-Esteem\n2.24\n2.20\n0.53\n2.20\n0.86\n\n\n\n\n\n\n\nAmong female participants, the mean score for Social Anxiety was 2.44, the mean score for Attachment Anxiety was 3.43, and the mean score for Self-Esteem was 2.24."
+  }
+]

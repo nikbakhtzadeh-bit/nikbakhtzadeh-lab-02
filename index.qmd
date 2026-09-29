@@ -1,16 +1,237 @@
 ---
 title: "9041 Assignment 2"
-author: Selena Esteves
+author: Marjan Nikbakhtzadeh
 date: today
-format: 
-    html:
-      toc: true
-      code-fold: true
-      code-summary: "Show code"
-      df-print: paged
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-summary: "Show code"
+    df-print: paged
 execute:
-    echo: false
-    warning: false
+  echo: false
+  warning: false
 ---
 
+```{r setup}
+library(tidyverse)
+library(psych)
+library(readxl)
+library(gt)
+library(janitor)
 
+# Load and clean data
+data <- read_excel("Attachment_Anxiety_Data.xlsx") %>%
+  clean_names()
+
+# Convert questionnaire responses to integer
+data <- data %>%
+  mutate(
+    across(
+      c(starts_with("sa_"),
+        starts_with("aa_"),
+        starts_with("s_est_")),
+      as.integer
+    )
+  )
+
+# Label demographic variables
+data <- data %>%
+  mutate(
+    gender = case_when(
+      gender == "1" ~ "Male",
+      gender == "2" ~ "Female"
+    ),
+    age_group = case_when(
+      age_group == "1" ~ "18-24",
+      age_group == "2" ~ "24-34",
+      age_group == "3" ~ "35-44",
+      age_group == "4" ~ "45-54",
+      age_group == "5" ~ "55-64"
+    )
+  )
+
+# Sample size
+sample_size <- nrow(data)
+
+# Answer keys
+sa_key <- list(
+  Social_Anxiety = c(
+    "sa_1", "sa_2", "sa_3", "sa_4", "-sa_5",
+    "sa_6", "sa_7", "sa_8", "-sa_9", "sa_10",
+    "-sa_11", "sa_12", "sa_13", "sa_14", "sa_15",
+    "sa_16", "sa_17", "sa_18", "sa_19", "sa_20"
+  )
+)
+
+aa_key <- list(
+  Attachment_Anxiety = c(
+    "aa_1", "aa_2", "aa_3", "aa_4", "aa_5",
+    "aa_6", "aa_7", "aa_8", "aa_9"
+  )
+)
+
+se_key <- list(
+  Self_Esteem = c(
+    "s_est_1", "-s_est_2", "s_est_3", "s_est_4",
+    "-s_est_5", "-s_est_6", "s_est_7", "-s_est_8",
+    "-s_est_9", "s_est_10"
+  )
+)
+
+# Score the three scales
+sa_scores <- scoreItems(sa_key, data, min = 0, max = 4)
+aa_scores <- scoreItems(aa_key, data, min = 1, max = 7)
+se_scores <- scoreItems(se_key, data, min = 1, max = 4)
+
+sa_df <- as.data.frame(sa_scores$scores)
+aa_df <- as.data.frame(aa_scores$scores)
+se_df <- as.data.frame(se_scores$scores)
+
+scale_scores <- cbind(sa_df, aa_df, se_df)
+data_combined <- cbind(data, scale_scores)
+
+# Demographic table
+demographic_table <- data_combined %>%
+  tabyl(gender, age_group)
+
+demographic_gt <- demographic_table %>%
+  gt() %>%
+  tab_header(
+    title = "Demographic Summary"
+  )
+
+# Overall score table
+summary <- describe(
+  data_combined %>%
+    select(Social_Anxiety, Attachment_Anxiety, Self_Esteem)
+)
+
+summary_df <- as.data.frame(summary)
+
+summary_df$Scales <- c(
+  "Social Anxiety",
+  "Attachment Anxiety",
+  "Self-Esteem"
+)
+
+alpha_table <- data.frame(
+  Alpha = c(
+    round(sa_scores$alpha[1], 2),
+    round(aa_scores$alpha[1], 2),
+    round(se_scores$alpha[1], 2)
+  )
+)
+
+score_table_final <- cbind(
+  summary_df %>%
+    select(Scales, mean, median, sd, range),
+  alpha_table
+)
+
+score_gt <- score_table_final %>%
+  gt() %>%
+  tab_header(
+    title = "Scale Summary Statistics"
+  ) %>%
+  fmt_number(
+    columns = c(mean, median, sd, range),
+    decimals = 2
+  )
+
+# Filter female participants
+filtered_data <- data_combined %>%
+  filter(gender == "Female")
+
+filtered_summary <- describe(
+  filtered_data %>%
+    select(Social_Anxiety, Attachment_Anxiety, Self_Esteem)
+)
+
+filtered_summary_df <- as.data.frame(filtered_summary)
+
+filtered_summary_df$Scales <- c(
+  "Social Anxiety",
+  "Attachment Anxiety",
+  "Self-Esteem"
+)
+
+# Recalculate alpha for female participants
+filtered_sa_scores <- scoreItems(
+  sa_key, filtered_data, min = 0, max = 4
+)
+
+filtered_aa_scores <- scoreItems(
+  aa_key, filtered_data, min = 1, max = 7
+)
+
+filtered_se_scores <- scoreItems(
+  se_key, filtered_data, min = 1, max = 4
+)
+
+filtered_alpha_table <- data.frame(
+  Alpha = c(
+    round(filtered_sa_scores$alpha[1], 2),
+    round(filtered_aa_scores$alpha[1], 2),
+    round(filtered_se_scores$alpha[1], 2)
+  )
+)
+
+filtered_score_table_final <- cbind(
+  filtered_summary_df %>%
+    select(Scales, mean, median, sd, range),
+  filtered_alpha_table
+)
+
+filtered_score_gt <- filtered_score_table_final %>%
+  gt() %>%
+  tab_header(
+    title = "Scale Summary Statistics – Female Participants"
+  ) %>%
+  fmt_number(
+    columns = c(mean, median, sd, range),
+    decimals = 2
+  )
+```
+
+## Intro
+
+## Methods
+
+### Participants
+
+The sample consisted of `r sample_size` participants.
+
+```{r}
+demographic_gt
+```
+
+### Measures
+
+The Social Interaction Anxiety Scale (SIAS) was used to measure social interaction anxiety. The scale demonstrated good internal consistency in the present sample, with a Cronbach's alpha of `r round(sa_scores$alpha[1], 2)`.
+
+The Experiences in Close Relationships Anxiety Subscale was used to measure attachment-related anxiety. Its Cronbach's alpha was `r round(aa_scores$alpha[1], 2)`.
+
+The Rosenberg Self-Esteem Scale was used to measure self-esteem. Its Cronbach's alpha was `r round(se_scores$alpha[1], 2)`.
+
+### Data Analysis Strategy
+
+The questionnaire items were scored using the `scoreItems()` function. Reverse keying was applied to the specified items before calculating the scale scores. For the Social Interaction Anxiety Scale, items 5, 9, and 11 were reverse-keyed. For the Rosenberg Self-Esteem Scale, items 2, 5, 6, 8, and 9 were reverse-keyed. No items were reverse-keyed for the Attachment Anxiety scale. Average scores were then calculated for each scale.
+
+## Results
+
+The overall scale scores are presented in the table below.
+
+```{r}
+score_gt
+```
+
+The mean score for Social Anxiety was `r round(summary_df$mean[1], 2)`, the mean score for Attachment Anxiety was `r round(summary_df$mean[2], 2)`, and the mean score for Self-Esteem was `r round(summary_df$mean[3], 2)`.
+
+The table below presents the scale scores for female participants.
+
+```{r}
+filtered_score_gt
+```
+
+Among female participants, the mean score for Social Anxiety was `r round(filtered_summary_df$mean[1], 2)`, the mean score for Attachment Anxiety was `r round(filtered_summary_df$mean[2], 2)`, and the mean score for Self-Esteem was `r round(filtered_summary_df$mean[3], 2)`.
